@@ -38,14 +38,15 @@ class Product:
 
 class Customer:
     """Initializes customer's name and ID"""
-    def __init__(self, name, ID):
+    def __init__(self, name, ID, premium_member):
         self._name = name
         self._ID = ID
-        self._premium_member = True or False
-
-    def customer_cart(self):
-        """Customer's Cart"""
+        self._premium_member = premium_member
         self._customer_cart = []
+
+    def get_customer_cart(self):
+        """Returns Customer's cart"""
+        return self._customer_cart
 
     def get_name(self):
         """Returns customer's name"""
@@ -59,13 +60,15 @@ class Customer:
         """Returns if customer is premium member or not"""
         return self._premium_member
 
-    def  add_product_to_cart(self, ID):
+    def add_product_to_cart(self, ID):
         """Takes a product ID code and adds it to the Customer's cart"""
         self._customer_cart.append(ID)
 
-    def empty_car(self):
+
+    def empty_cart(self):
         """ Empties the Customer's cart"""
         self._customer_cart = [self._customer_cart.remove(item) for item in self._customer_cart]
+
 
 class Store:
     """Initializes the store"""
@@ -82,14 +85,15 @@ class Store:
         self.new_list.append(products.get_description())
         self.new_list.append(products.get_price())
         self.new_list.append(products.get_quantity_available())
-
         self._products[self.new_list[0]] = self.new_list[1:]
-
 
 
     def add_member(self, customer):
         """Takes a Customer object and adds it to the membership"""
-        new_customer = [name for name in customer]
+        new_customer = []
+        new_customer.append(customer.get_name())
+        new_customer.append(customer.get_ID())
+        new_customer.append(customer.is_premium_member())
         self._customers.append(new_customer)
 
 
@@ -104,6 +108,15 @@ class Store:
                 return self._products[item]
             else:
                 return None
+
+    def  get_member_from_id(self, ID):
+        """Takes a Customer ID and returns the Customer with the matching ID"""
+        for person in self._customers:
+            if ID in person:
+                return person[0]
+            else:
+                return None
+
     def product_search(self, search):
         """
         Takes a search string and returns a sorted (in lexicographic order) list of ID codes for every
@@ -113,16 +126,21 @@ class Store:
         product_list = []
         for item in self._products:
                 if search in (self._products[item]):
-                    for _ in self._products:
-                        product_list.append(_)
+                    product_list.append(item)
+                    product_list.sort()
+        return product_list
 
 
     def add_product_to_member_cart(self, product_id, customer_id):
         """
          Takes a Product ID and a Customer ID (in that order).  If the product isn't found in
          the inventory, return "product ID not found"
-        :return:
+
         """
+        if str(product_id) in self._products and customer_id in self._customers:
+            self._customer_cart.append(product_id)
+        else:
+            print("product ID not found")
 
     def check_out_member(self):
         """
@@ -130,10 +148,16 @@ class Store:
         :return:
         """
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
-#c1 = Customer("Yinsheng", "QWF", False)
+c1 = Customer("Yinsheng", "QWF", False)
 p2 = Product("999", "The Vow", "We are one", 44, 3)
+c2 = Customer("Matt", "MES", True)
 
 myStore = Store()
 myStore.add_product(p1)
 myStore.add_product(p2)
-print(myStore.product_search('The Vow'))
+myStore.add_member(c1)
+myStore.add_member(c2)
+print(c1.add_product_to_cart(1))
+print(c1.add_product_to_cart(5))
+print(c1.add_product_to_cart(3))
+print(c1.empty_cart())
