@@ -79,7 +79,7 @@ class Store:
         self._customers = {}
         self._new_member = []
         self._new_cart = {}
-        self._second_new_cart = set()
+        self._second_cart = []
     def add_product(self, products):
         """ Takes a Product object and adds it to the inventory"""
         self.new_list = []
