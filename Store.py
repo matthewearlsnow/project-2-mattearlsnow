@@ -64,9 +64,12 @@ class Customer:
         """Takes a product ID code and adds it to the Customer's cart"""
         self._customer_cart.append(ID)
 
+
     def empty_cart(self):
         """ Empties the Customer's cart"""
         self._customer_cart = [self._customer_cart.remove(item) for item in self._customer_cart]
+
+
 
 
 class Store:
@@ -74,8 +77,9 @@ class Store:
     def __init__(self):
         self._products = {}
         self._customers = {}
-
-
+        self._new_member = []
+        self._new_cart = {}
+        self._second_new_cart = set()
     def add_product(self, products):
         """ Takes a Product object and adds it to the inventory"""
         self.new_list = []
@@ -87,14 +91,16 @@ class Store:
         self._products[self.new_list[0]] = self.new_list[1:]
 
 
+
     def add_member(self, customer):
         """Takes a Customer object and adds it to the membership"""
+        self._new_member.append(customer)
         new_customer = []
         new_customer.append(customer.get_name())
         new_customer.append(customer.get_ID())
         new_customer.append(customer.is_premium_member())
         self._customers[new_customer[1]] = new_customer[0::2]
-        print(self._customers)
+
 
 
     def get_product_from_id(self, ID):
@@ -135,31 +141,50 @@ class Store:
         """
          Takes a Product ID and a Customer ID (in that order).  If the product isn't found in
          the inventory, return "product ID not found"
-
         """
+
         if product_id in self._products and customer_id in self._customers and Product.get_quantity_available != 0:
-            Customer.add_product_to_cart()
+            for person in self._new_member:
+                if customer_id == Customer.get_ID(person):
+                    self._new_cart[customer_id] = product_id
+                    print(self._new_cart)
         elif product_id not in self._products:
             return "product ID not found"
         elif product_id in self._products and customer_id not in self._customers:
             return "member ID not found"
 
     def check_out_member(self, customer_id):
+
         """
         Takes a Customer ID.  If the ID doesn't match a member of the Store, raise an **InvalidCheckoutError**
         """
-        if customer_id not in self._customers:
-            raise Exception('InvalidCheckoutError')
-        else:
+        for person in self._new_member:
+            if customer_id == Customer.get_ID(person):
+                print('found')
+
+        #else:
+            #raise Exception("InvalidCheckoutError")
+
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
 c1 = Customer("Yinsheng", "QWF", False)
 p2 = Product("999", "The Vow", "We are one", 44, 3)
 c2 = Customer("Matt", "MES", True)
-c1.add_product_to_cart(8)
+p3 = Product("111", "Cake", "Birthday Cake", 1, 8)
+p4 = Product("222", "Snickers", "Big Snickers", 2, 4)
+p5 = Product("333", "GUM", "BubleGUM", 33, 2)
+
 
 myStore = Store()
 myStore.add_product(p1)
 myStore.add_product(p2)
 myStore.add_member(c1)
 myStore.add_member(c2)
-print(myStore.add_product_to_member_cart("999","QWF"))
+myStore.add_product(p3)
+myStore.add_product(p4)
+myStore.add_product(p5)
+myStore.add_product_to_member_cart("999","MES")
+myStore.add_product_to_member_cart("999","QWF")
+myStore.add_product_to_member_cart("111","MES")
+#myStore.add_product_to_member_cart("222","MES")
+#(myStore.add_product_to_member_cart("889","MES"))
+#print(myStore.check_out_member('MES'))
