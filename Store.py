@@ -71,17 +71,19 @@ class Customer:
 
 
 
-
 class Store:
     """Initializes the store"""
     def __init__(self):
         self._products = {}
+        self._test_products = []
         self._customers = {}
         self._new_member = []
         self._new_cart = {}
-        self._second_cart = []
+        self._second_cart = set()
+
     def add_product(self, products):
         """ Takes a Product object and adds it to the inventory"""
+        self._test_products.append(products)
         self.new_list = []
         self.new_list.append(products.get_product_id())
         self.new_list.append(products.get_title())
@@ -89,8 +91,6 @@ class Store:
         self.new_list.append(products.get_price())
         self.new_list.append(products.get_quantity_available())
         self._products[self.new_list[0]] = self.new_list[1:]
-
-
 
     def add_member(self, customer):
         """Takes a Customer object and adds it to the membership"""
@@ -100,7 +100,6 @@ class Store:
         new_customer.append(customer.get_ID())
         new_customer.append(customer.is_premium_member())
         self._customers[new_customer[1]] = new_customer[0::2]
-
 
 
     def get_product_from_id(self, ID):
@@ -127,7 +126,6 @@ class Store:
         """
         Takes a search string and returns a sorted (in lexicographic order) list of ID codes for every
         product in the inventory whose title or description contains the search string
-
         """
         product_list = []
         for item in self._products:
@@ -144,26 +142,45 @@ class Store:
         """
 
         if product_id in self._products and customer_id in self._customers and Product.get_quantity_available != 0:
+            self._second_cart.add(product_id)
             for person in self._new_member:
+                print(person)
                 if customer_id == Customer.get_ID(person):
-                    self._new_cart[customer_id] = product_id
-                    print(self._new_cart)
+                    Customer.add_product_to_cart(person, product_id)
+                    self._new_cart[customer_id] = self._second_cart
+
         elif product_id not in self._products:
             return "product ID not found"
         elif product_id in self._products and customer_id not in self._customers:
             return "member ID not found"
 
-    def check_out_member(self, customer_id):
+    def exception_not_found(self):
+        return "**InvalidCheckoutError**"
 
+    def check_out_member(self, customer_id):
         """
         Takes a Customer ID.  If the ID doesn't match a member of the Store, raise an **InvalidCheckoutError**
         """
-        for person in self._new_member:
-            if customer_id == Customer.get_ID(person):
-                print('found')
+        #try:
+        check_out = []
+        if customer_id in self._customers:
+            for person in self._new_member:
+                if customer_id == Customer.get_ID(person):
+                    for item in Customer.get_customer_cart(person):
+                        print(Product.get_product_id(person))
+                        #check_out.append(item)
+                        #print(check_out)
+                        #for person in self._test_products:
+                            #print(Product.get_price(item))
 
-        #else:
-            #raise Exception("InvalidCheckoutError")
+
+
+
+        else:
+            print('name not valid')
+
+
+
 
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
 c1 = Customer("Yinsheng", "QWF", False)
@@ -181,10 +198,13 @@ myStore.add_member(c1)
 myStore.add_member(c2)
 myStore.add_product(p3)
 myStore.add_product(p4)
-myStore.add_product(p5)
-myStore.add_product_to_member_cart("999","MES")
-myStore.add_product_to_member_cart("999","QWF")
-myStore.add_product_to_member_cart("111","MES")
+print(p1.get_quantity_available())
+print(p1.decrease_quanity())
+print(p1.get_quantity_available())
+print(myStore.add_product(p5))
+#myStore.add_product_to_member_cart("999","MES")
+#myStore.add_product_to_member_cart("999","QWF")
+#myStore.add_product_to_member_cart("111","MES")
 #myStore.add_product_to_member_cart("222","MES")
-#(myStore.add_product_to_member_cart("889","MES"))
+#myStore.add_product_to_member_cart("889","MES")
 #print(myStore.check_out_member('MES'))
