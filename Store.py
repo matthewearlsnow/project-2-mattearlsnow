@@ -129,13 +129,17 @@ class Store:
         product in the inventory whose title or description contains the search string
         """
         product_list = []
+        search = search.lower()
 
         for item in self._products:
-            print(self._products[item])
-                #if search in self._products[item]:
-                    #product_list.append(item)
-                    #product_list.sort()
-        #print(self._products)
+            description = self._products[item][1].lower()
+            title = self._products[item][0].lower()
+            if search in description:
+                product_list.append(item)
+            elif search in title:
+                product_list.append(item)
+            product_list.sort()
+
         return product_list
 
 
@@ -191,9 +195,9 @@ p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size j
 c1 = Customer("Yinsheng", "QWF", False)
 p2 = Product("999", "The Vow", "We are one", 44, 3)
 c2 = Customer("Matt", "MES", True)
-p3 = Product("111", "Cake", "Birthday Cake", 1, 8)
-p4 = Product("222", "Snickers", "Big Snickers", 2, 4)
-p5 = Product("333", "GUM", "BubleGUM", 33, 2)
+p3 = Product("111", "small Cake", "Birthday Cake", 1, 8)
+p4 = Product("222", "Big Cake", "Big Snickers", 2, 4)
+p5 = Product("333", "Medium Cake", "BubleGUM", 33, 2)
 
 
 myStore = Store()
@@ -204,7 +208,7 @@ myStore.add_member(c2)
 myStore.add_product(p3)
 myStore.add_product(p4)
 myStore.add_product(p5)
-print(myStore.product_search('vow'))
+print(myStore.product_search('gum'))
 #myStore.add_product_to_member_cart("999","MES")
 #myStore.add_product_to_member_cart("999","QWF")
 #myStore.add_product_to_member_cart("111","MES")
