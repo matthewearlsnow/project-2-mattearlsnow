@@ -1,7 +1,11 @@
 # Author: Matthew Snow
 # Date: January 8, 2021
 # Description: This program is a shopping center checkout program! The player will add items
-# to the store and create customers, then add certain items to the customer's carts.
+# to the store and create customers, then add certain items to the customer's carts. When they
+# are ready, they can checkout and get the total price for the items in the cart
+
+class InvalidCheckoutError(Exception):
+    pass
 
 class Product:
     """Initializes the product's data members"""
@@ -39,7 +43,7 @@ class Product:
 
 class Customer:
     """Initializes customer's name and ID"""
-    def __init__(self, name, ID, premium_member):
+    def __init__(self, name, ID, premium_member=False):
         self._name = name
         self._ID = ID
         self._premium_member = premium_member
@@ -64,7 +68,6 @@ class Customer:
     def add_product_to_cart(self, ID):
         """Takes a product ID code and adds it to the Customer's cart"""
         self._customer_cart.append(ID)
-
 
     def empty_cart(self):
         """ Empties the Customer's cart"""
@@ -139,81 +142,58 @@ class Store:
             elif search in title:
                 product_list.append(item)
             product_list.sort()
-
         return product_list
 
 
-
     def add_product_to_member_cart(self, product_id, customer_id):
-        """
-         Takes a Product ID and a Customer ID (in that order).  If the product isn't found in
-         the inventory, return "product ID not found"
-        """
-
+        """Takes a Product ID and a Customer ID (in that order) and adds products to customer's cart"""
         if product_id in self._products and customer_id in self._customers and Product.get_quantity_available != 0:
-            self._second_cart.add(product_id)
-            for person in self._new_member:
-                print(person)
-                if customer_id == Customer.get_ID(person):
-                    Customer.add_product_to_cart(person, product_id)
-                    self._new_cart[customer_id] = self._second_cart
+            for customer in self._new_member:
+                Customer.add_product_to_cart(customer, product_id)
+                return Customer.get_customer_cart(customer)
 
         elif product_id not in self._products:
             return "product ID not found"
         elif product_id in self._products and customer_id not in self._customers:
             return "member ID not found"
 
-    def exception_not_found(self):
-        return "**InvalidCheckoutError**"
+
 
     def check_out_member(self, customer_id):
         """
         Takes a Customer ID.  If the ID doesn't match a member of the Store, raise an **InvalidCheckoutError**
+        Otherwise, will return the value of all the itmes in the cart
         """
-        #try:
+
         check_out = []
+        total = 0
+        if customer_id not in self._customers:
+            raise InvalidCheckoutError
         if customer_id in self._customers:
             for person in self._new_member:
                 if customer_id == Customer.get_ID(person):
-                    for item in Customer.get_customer_cart(person):
-                        print(Product.get_product_id(person))
-                        #check_out.append(item)
-                        #print(check_out)
-                        #for person in self._test_products:
-                            #print(Product.get_price(item))
-
-
-
-
-        else:
-            print('name not valid')
-
-
+                    test = Customer.get_customer_cart(person)
+                    for item in test:
+                        if item in self._products:
+                            check_out.append(self._products[item][-2])
+                    for amount in check_out:
+                        total += amount
+                    return total
 
 
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
-c1 = Customer("Yinsheng", "QWF", False)
-p2 = Product("999", "The Vow", "We are one", 44, 3)
-c2 = Customer("Matt", "MES", True)
-p3 = Product("111", "small Cake", "Birthday Cake", 1, 8)
-p4 = Product("222", "Big Cake", "Big Snickers", 2, 4)
-p5 = Product("333", "Medium Cake", "BubleGUM", 33, 2)
-
-
+c1 = Customer("Yinsheng", "MES", True)
 myStore = Store()
 myStore.add_product(p1)
-myStore.add_product(p2)
 myStore.add_member(c1)
-myStore.add_member(c2)
-myStore.add_product(p3)
-myStore.add_product(p4)
-myStore.add_product(p5)
-print(myStore.product_search('gum'))
-#myStore.add_product_to_member_cart("999","MES")
-#myStore.add_product_to_member_cart("999","QWF")
-#myStore.add_product_to_member_cart("111","MES")
-#myStore.add_product_to_member_cart("222","MES")
-#myStore.add_product_to_member_cart("889","MES")
+c1.add_product_to_cart('889')
 
 
-#print(myStore.check_out_member('MES'))
+def main():
+    try:
+        myStore.check_out_member('MES')
+    except InvalidCheckoutError:
+        print(" **InvalidCheckoutError** ")
+
+if __name__ == "__main__":
+    main()

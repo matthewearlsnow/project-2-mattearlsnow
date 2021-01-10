@@ -1,6 +1,6 @@
 # Author: Matthew Snow
 # Date: January 8, 2021
-# Description: Unit Testing
+# Description: This is for unit testing.
 
 import unittest
 import Store
@@ -18,7 +18,6 @@ class Test_Customer(unittest.TestCase):
         c1 = Store.Customer("Matt", "MES", True)
         results = c1.is_premium_member()
         self.assertTrue(results)
-
 
 class Test_Product_price(unittest.TestCase):
     """Assert product price is great than 0 """
@@ -42,8 +41,6 @@ class Test_decrease_quantity(unittest.TestCase):
         p1.decrease_quanity()
         results = p1.get_quantity_available()
         self.assertLess(results, quantity)
-
-
 
 
 if __name__=="__main__":
