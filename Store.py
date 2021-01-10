@@ -149,9 +149,9 @@ class Store:
         """Takes a Product ID and a Customer ID (in that order) and adds products to customer's cart"""
         if product_id in self._products and customer_id in self._customers and Product.get_quantity_available != 0:
             for customer in self._new_member:
-                Customer.add_product_to_cart(customer, product_id)
-                return Customer.get_customer_cart(customer)
-
+                customer_check = Customer.get_ID(customer)
+                if customer_check == customer_id:
+                    customer.add_product_to_cart(product_id)
         elif product_id not in self._products:
             return "product ID not found"
         elif product_id in self._products and customer_id not in self._customers:
@@ -182,16 +182,25 @@ class Store:
 
 
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
-c1 = Customer("Yinsheng", "MES", True)
+c1 = Customer("Matt", "MES", True)
+p2 = Product("111", "Cake", "Big Cake", 6, 6)
+c2 = Customer("Tim", "TJS", True)
+p3 = Product("222", "STUFF", "Big CAKES", 7, 6)
 myStore = Store()
 myStore.add_product(p1)
 myStore.add_member(c1)
-c1.add_product_to_cart('889')
+myStore.add_product(p2)
+myStore.add_member(c2)
+myStore.add_product(p3)
+myStore.add_product_to_member_cart("889", "MES")
+myStore.add_product_to_member_cart("111", "MES")
+myStore.add_product_to_member_cart("222", "TJS")
+
 
 
 def main():
     try:
-        myStore.check_out_member('MES')
+        print(myStore.check_out_member('TJS'))
     except InvalidCheckoutError:
         print(" **InvalidCheckoutError** ")
 
