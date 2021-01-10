@@ -1,6 +1,7 @@
 # Author: Matthew Snow
 # Date: January 8, 2021
-# Description:
+# Description: This program is a shopping center checkout program! The player will add items
+# to the store and create customers, then add certain items to the customer's carts.
 
 class Product:
     """Initializes the product's data members"""
@@ -111,16 +112,16 @@ class Store:
         for item in self._products:
             if str(ID) == item:
                 return self._products[item]
-            else:
-                return None
+        else:
+            return None
 
     def get_member_from_id(self, ID):
         """Takes a Customer ID and returns the Customer with the matching ID"""
         for person in self._customers:
-            if ID in person:
-                return person[0]
-            else:
-                return None
+            if ID == person:
+                return self._customers[ID][0]
+        else:
+            return None
 
     def product_search(self, search):
         """
@@ -128,11 +129,15 @@ class Store:
         product in the inventory whose title or description contains the search string
         """
         product_list = []
+
         for item in self._products:
-                if search in (self._products[item]):
-                    product_list.append(item)
-                    product_list.sort()
+            print(self._products[item])
+                #if search in self._products[item]:
+                    #product_list.append(item)
+                    #product_list.sort()
+        #print(self._products)
         return product_list
+
 
 
     def add_product_to_member_cart(self, product_id, customer_id):
@@ -198,13 +203,13 @@ myStore.add_member(c1)
 myStore.add_member(c2)
 myStore.add_product(p3)
 myStore.add_product(p4)
-print(p1.get_quantity_available())
-print(p1.decrease_quanity())
-print(p1.get_quantity_available())
-print(myStore.add_product(p5))
+myStore.add_product(p5)
+print(myStore.product_search('vow'))
 #myStore.add_product_to_member_cart("999","MES")
 #myStore.add_product_to_member_cart("999","QWF")
 #myStore.add_product_to_member_cart("111","MES")
 #myStore.add_product_to_member_cart("222","MES")
 #myStore.add_product_to_member_cart("889","MES")
+
+
 #print(myStore.check_out_member('MES'))
