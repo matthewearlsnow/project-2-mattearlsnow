@@ -8,10 +8,11 @@ class InvalidCheckoutError(Exception):
     """Exception handling class"""
     pass
 
+
 class Product:
     """Initializes the product's data members"""
-    def __init__(self, ID, title, description, price, quantity_available):
-        self._ID = ID
+    def __init__(self, id, title, description, price, quantity_available):
+        self._id = id
         self._title = title
         self._description = description
         self._price = price
@@ -19,7 +20,7 @@ class Product:
 
     def get_product_id(self):
         """Returns ID"""
-        return self._ID
+        return self._id
 
     def get_title(self):
         """Returns title"""
@@ -37,16 +38,16 @@ class Product:
         """Returns quantity available"""
         return self._quantity_available
 
-    def decrease_quanity(self):
+    def decrease_quantity(self):
         """Decreases quantity available by 1"""
         self._quantity_available -= 1
 
 
 class Customer:
     """Initializes customer's name and ID"""
-    def __init__(self, name, ID, premium_member=False):
+    def __init__(self, name, id, premium_member=False):
         self._name = name
-        self._ID = ID
+        self._id = id
         self._premium_member = premium_member
         self._customer_cart = []
 
@@ -58,22 +59,21 @@ class Customer:
         """Returns customer's name"""
         return self._name
 
-    def get_ID(self):
+    def get_id(self):
         """Returns customer's ID"""
-        return self._ID
+        return self._id
 
     def is_premium_member(self):
         """Returns if customer is premium member or not"""
         return self._premium_member
 
-    def add_product_to_cart(self, ID):
+    def add_product_to_cart(self, id):
         """Takes a product ID code and adds it to the Customer's cart"""
-        self._customer_cart.append(ID)
+        self._customer_cart.append(id)
 
     def empty_cart(self):
         """ Empties the Customer's cart"""
         self._customer_cart = [self._customer_cart.remove(item) for item in self._customer_cart]
-
 
 
 class Store:
@@ -87,42 +87,41 @@ class Store:
 
     def add_product(self, products):
         """ Takes a Product object and adds it to the inventory"""
+        new_list = []
         self._products_objects.append(products)
-        self.new_list = []
-        self.new_list.append(products.get_product_id())
-        self.new_list.append(products.get_title())
-        self.new_list.append(products.get_description())
-        self.new_list.append(products.get_price())
-        self.new_list.append(products.get_quantity_available())
-        self._products[self.new_list[0]] = self.new_list[1:]
+        new_list.append(products.get_product_id())
+        new_list.append(products.get_title())
+        new_list.append(products.get_description())
+        new_list.append(products.get_price())
+        new_list.append(products.get_quantity_available())
+        self._products[new_list[0]] = new_list[1:]
 
     def add_member(self, customer):
         """Takes a Customer object and adds it to the membership"""
         self._new_member.append(customer)
         new_customer = []
         new_customer.append(customer.get_name())
-        new_customer.append(customer.get_ID())
+        new_customer.append(customer.get_id())
         new_customer.append(customer.is_premium_member())
         self._customers[new_customer[1]] = new_customer[0::2]
 
-
-    def get_product_from_id(self, ID):
+    def get_product_from_id(self, id):
         """
         Takes a Product ID and returns the Product with the matching ID.
         If no matching ID is found in the inventory, it returns
         the special value None
         """
         for item in self._products:
-            if str(ID) == item:
+            if str(id) == item:
                 return self._products[item]
         else:
             return None
 
-    def get_member_from_id(self, ID):
+    def get_member_from_id(self, id):
         """Takes a Customer ID and returns the Customer with the matching ID"""
         for person in self._customers:
-            if ID == person:
-                return self._customers[ID][0]
+            if id == person:
+                return self._customers[id][0]
         else:
             return None
 
@@ -144,37 +143,36 @@ class Store:
             product_list.sort()
         return product_list
 
-
     def add_product_to_member_cart(self, product_id, customer_id):
         """Takes a Product ID and a Customer ID (in that order) and adds products to customer's cart"""
         if product_id in self._products and customer_id in self._customers:
             for customer in self._new_member:
-                customer_check = Customer.get_ID(customer)
+                customer_check = Customer.get_id(customer)
                 if customer_check == customer_id:
                     customer.add_product_to_cart(product_id)
             for product in self._products_objects:
-                product_check = Product.get_product_id((product))
-                if product_check == product_id:
-                    product.decrease_quanity()
+                product_check = Product.get_product_id(product)
+                if product_check == product_id and Product.get_quantity_available(product) > 0 :
+                    product.decrease_quantity()
+                elif product_check == product_id and Product.get_quantity_available(product) == 0:
+                    print('Out Of Stock')
         elif product_id not in self._products:
             return "product ID not found"
         elif product_id in self._products and customer_id not in self._customers:
             return "member ID not found"
 
-
     def check_out_member(self, customer_id):
         """
         Takes a Customer ID.  If the ID doesn't match a member of the Store, raise an **InvalidCheckoutError**
-        Otherwise, will return the value of all the itmes in the cart
+        Otherwise, will return the value of all the items in the cart
         """
-
         check_out = []
         total = 0
         if customer_id not in self._customers:
             raise InvalidCheckoutError
         if customer_id in self._customers:
             for person in self._new_member:
-                if customer_id == Customer.get_ID(person):
+                if customer_id == Customer.get_id(person):
                     test = Customer.get_customer_cart(person)
                     for item in test:
                         if item in self._products:
@@ -182,7 +180,6 @@ class Store:
                     for amount in check_out:
                         total += amount
                     return total
-
 
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
 c1 = Customer("Matt", "MES", True)
@@ -203,7 +200,7 @@ myStore.add_product_to_member_cart("222", "TJS")
 
 def main():
     try:
-        print(myStore.check_out_member('MES'))
+        print(myStore.check_out_member('TJS'))
     except InvalidCheckoutError:
         print(" **InvalidCheckoutError** ")
 
