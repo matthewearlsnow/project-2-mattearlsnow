@@ -154,8 +154,9 @@ class Store:
                 product_check = Product.get_product_id(product)
                 if product_check == product_id and Product.get_quantity_available(product) > 0 :
                     product.decrease_quantity()
+                    return "product added to cart"
                 elif product_check == product_id and Product.get_quantity_available(product) == 0:
-                    print('Out Of Stock')
+                    return 'product out of stock'
         elif product_id not in self._products:
             return "product ID not found"
         elif product_id in self._products and customer_id not in self._customers:
@@ -181,6 +182,7 @@ class Store:
                         total += amount
                     return total
 
+
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
 c1 = Customer("Matt", "MES", True)
 p2 = Product("111", "Cake", "Big Cake", 6, 6)
@@ -200,9 +202,10 @@ myStore.add_product_to_member_cart("222", "TJS")
 
 def main():
     try:
-        print(myStore.check_out_member('TJS'))
+        print(myStore.check_out_member('MES'))
     except InvalidCheckoutError:
-        print(" **InvalidCheckoutError** ")
+        print(" **InvalidCheckoutError** \n Please confirm that you have the correct member id \n "
+              "and confirm that member is valid. Otherwise, add the member and try again")
 
 if __name__ == "__main__":
     main()
