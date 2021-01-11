@@ -5,6 +5,7 @@
 # are ready, they can checkout and get the total price for the items in the cart
 
 class InvalidCheckoutError(Exception):
+    """Exception handling class"""
     pass
 
 class Product:
