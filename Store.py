@@ -79,15 +79,14 @@ class Store:
     """Initializes the store"""
     def __init__(self):
         self._products = {}
-        self._test_products = []
+        self._products_objects = []
         self._customers = {}
         self._new_member = []
         self._new_cart = {}
-        self._second_cart = set()
 
     def add_product(self, products):
         """ Takes a Product object and adds it to the inventory"""
-        self._test_products.append(products)
+        self._products_objects.append(products)
         self.new_list = []
         self.new_list.append(products.get_product_id())
         self.new_list.append(products.get_title())
@@ -147,16 +146,19 @@ class Store:
 
     def add_product_to_member_cart(self, product_id, customer_id):
         """Takes a Product ID and a Customer ID (in that order) and adds products to customer's cart"""
-        if product_id in self._products and customer_id in self._customers and Product.get_quantity_available != 0:
+        if product_id in self._products and customer_id in self._customers:
             for customer in self._new_member:
                 customer_check = Customer.get_ID(customer)
                 if customer_check == customer_id:
                     customer.add_product_to_cart(product_id)
+            for product in self._products_objects:
+                product_check = Product.get_product_id((product))
+                if product_check == product_id:
+                    product.decrease_quanity()
         elif product_id not in self._products:
             return "product ID not found"
         elif product_id in self._products and customer_id not in self._customers:
             return "member ID not found"
-
 
 
     def check_out_member(self, customer_id):
@@ -200,7 +202,7 @@ myStore.add_product_to_member_cart("222", "TJS")
 
 def main():
     try:
-        print(myStore.check_out_member('TJS'))
+        print(myStore.check_out_member('MES'))
     except InvalidCheckoutError:
         print(" **InvalidCheckoutError** ")
 
