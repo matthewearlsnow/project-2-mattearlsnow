@@ -173,8 +173,8 @@ class Store:
         if customer_id in self._customers:
             for person in self._new_member:
                 if customer_id == Customer.get_id(person):
-                    test = Customer.get_customer_cart(person)
-                    for item in test:
+                    cart = Customer.get_customer_cart(person)
+                    for item in cart:
                         if item in self._products:
                             check_out.append(self._products[item][-2])
                     for amount in check_out:
