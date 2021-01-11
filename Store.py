@@ -87,14 +87,14 @@ class Store:
 
     def add_product(self, products):
         """ Takes a Product object and adds it to the inventory"""
-        new_list = []
+        new_products = []
         self._products_objects.append(products)
-        new_list.append(products.get_product_id())
-        new_list.append(products.get_title())
-        new_list.append(products.get_description())
-        new_list.append(products.get_price())
-        new_list.append(products.get_quantity_available())
-        self._products[new_list[0]] = new_list[1:]
+        new_products.append(products.get_product_id())
+        new_products.append(products.get_title())
+        new_products.append(products.get_description())
+        new_products.append(products.get_price())
+        new_products.append(products.get_quantity_available())
+        self._products[new_products[0]] = new_products[1:]
 
     def add_member(self, customer):
         """Takes a Customer object and adds it to the membership"""
