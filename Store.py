@@ -169,6 +169,10 @@ class Store:
         """
         check_out = []
         total = 0
+        taxes = 0.06
+        shipping_premium = 0
+        shipping_standard = 0.07
+
         if customer_id not in self._customers:
             raise InvalidCheckoutError
         if customer_id in self._customers:
@@ -180,13 +184,17 @@ class Store:
                             check_out.append(self._products[item][-2])
                     for amount in check_out:
                         total += amount
-                    return total
-
+                    with_taxes = total + (total * taxes)
+                    if Customer.is_premium_member(person) is True:
+                        return "Amount: ", total, "Taxes: ", taxes, "Shipping", shipping_premium, "TOTAL: ", with_taxes
+                    else:
+                        with_shipping = with_taxes + (with_taxes * shipping_standard)
+                        return "Amount: ", total, "Taxes: ", taxes, "Shipping", shipping_standard, "TOTAL: ", with_shipping
 
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
 c1 = Customer("Matt", "MES", True)
 p2 = Product("111", "Cake", "Big Cake", 6, 6)
-c2 = Customer("Tim", "TJS", True)
+c2 = Customer("Tim", "TJS", False)
 p3 = Product("222", "STUFF", "Big CAKES", 7, 6)
 myStore = Store()
 myStore.add_product(p1)
@@ -194,7 +202,7 @@ myStore.add_member(c1)
 myStore.add_product(p2)
 myStore.add_member(c2)
 myStore.add_product(p3)
-myStore.add_product_to_member_cart("889", "MES")
+myStore.add_product_to_member_cart("222", "TJS")
 myStore.add_product_to_member_cart("111", "MES")
 myStore.add_product_to_member_cart("222", "TJS")
 
