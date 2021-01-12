@@ -186,10 +186,12 @@ class Store:
                         total += amount
                     with_taxes = total + (total * taxes)
                     if Customer.is_premium_member(person) is True:
-                        return "Amount: ", total, "Taxes: ", taxes, "Shipping", shipping_premium, "TOTAL: ", with_taxes
+                        return "Amount: ", total, "Taxes: ", taxes, "Shipping", shipping_premium,\
+                               "TOTAL: ", with_taxes
                     else:
                         with_shipping = with_taxes + (with_taxes * shipping_standard)
-                        return "Amount: ", total, "Taxes: ", taxes, "Shipping", shipping_standard, "TOTAL: ", with_shipping
+                        return "Amount: ", total, "Taxes: ", taxes, "Shipping", shipping_standard, \
+                               "TOTAL: ", with_shipping
 
 p1 = Product("889", "Rodent of unusual size", "when a rodent of the usual size just won't do", 33.45, 8)
 c1 = Customer("Matt", "MES", True)
